@@ -36,7 +36,7 @@ export const projects = {
         },
         {
             slug: "gcam-club",
-            title: "GCam Club",
+            title: "GB Clube (GcamBrasil Clube)",
             description: "Plataforma comunitária para entusiastas da GCam. Com compartilhamento de XML, predefinições e verificações de compatibilidade de dispositivos.",
             details: "Desenvolvido por Richard Rezende (Fundador GcamBrasil). O GBClube é a central definitiva para a comunidade de GCam. O aplicativo utiliza Flutter e Clean Architecture com integração profunda ao Firebase. Destaques: 1. RichAIdao (AI Powered): Chatbot assistente treinado especificamente para GCam. 2. Gestão de XMLs e Presets com listagem inteligente. 3. Download Manager robusto. 4. Login Social seguro. O projeto utiliza Firebase para Auth, Firestore, Storage, Cloud Messaging e Crashlytics.",
             image: "/images/gcam-club.png",
