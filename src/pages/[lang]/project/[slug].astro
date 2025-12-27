@@ -20,6 +20,7 @@ export function getStaticPaths() {
 }
 
 const { project, lang } = Astro.props;
+const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
 ---
 
 <Layout title={`${project.title} | Portfolio`} lang={lang}>
@@ -69,7 +70,7 @@ const { project, lang } = Astro.props;
                 project.image && (
                     <div class="rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900">
                         <img
-                            src={project.image}
+                            src={base + project.image}
                             alt={project.title}
                             class="w-full h-auto object-cover"
                         />
@@ -99,10 +100,10 @@ const { project, lang } = Astro.props;
                                 {project.gallery.map((image) => (
                                     <div
                                         class="rounded-xl overflow-hidden shadow-lg border border-gray-800 bg-gray-900 transition-transform duration-300 hover:scale-[1.02] cursor-pointer"
-                                        onclick={`openLightbox('${image}')`}
+                                        onclick={`openLightbox('${base}${image}')`}
                                     >
                                         <img
-                                            src={image}
+                                            src={base + image}
                                             alt={`${project.title} gallery image`}
                                             class="w-full h-48 object-cover"
                                         />
