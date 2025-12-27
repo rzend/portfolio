@@ -1,0 +1,101 @@
+---
+interface Props {
+	title: string;
+	description: string;
+	href: string;
+	tags?: string[];
+	color?: string; // hex code for global accent
+	class?: string;
+	image?: string;
+	slug?: string;
+}
+
+const {
+	title,
+	description,
+	href,
+	tags = [],
+	color = "#6366f1",
+	class: className,
+	image,
+	slug,
+} = Astro.props;
+const currentUrl = Astro.url.pathname;
+const lang = currentUrl.split("/")[1] || "pt";
+const detailsLink = slug ? `/${lang}/project/${slug}` : href;
+---
+
+<a
+	href={detailsLink}
+	class:list={[
+		"group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-gray-900 border border-gray-800 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl",
+		className,
+	]}
+	style={`--accent-color: ${color};`}
+>
+	<!-- Hover Glow Effect -->
+	<div
+		class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
+		style={`background: radial-gradient(circle at center, ${color}, transparent 70%);`}
+	>
+	</div>
+
+	<!-- Border Glow -->
+	<div
+		class="absolute inset-0 rounded-2xl ring-1 ring-white/10 group-hover:ring-[var(--accent-color)]/50 transition-all duration-300"
+	>
+	</div>
+
+	<div class="relative z-10 flex flex-col h-full">
+		{
+			image && (
+				<div class="mb-4 rounded-lg overflow-hidden border border-gray-700/50 shadow-sm relative h-48 w-full group-hover:border-[var(--accent-color)]/30 transition-all">
+					<img
+						src={image}
+						alt={title}
+						class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+					/>
+					<div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
+				</div>
+			)
+		}
+
+		<h3
+			class="text-xl font-semibold text-white mb-2 group-hover:text-[var(--accent-color)] transition-colors"
+		>
+			{title}
+		</h3>
+		<p class="text-gray-400 text-sm leading-relaxed mb-4">
+			{description}
+		</p>
+
+		<div class="mt-auto flex flex-wrap gap-2">
+			{
+				tags.map((tag) => (
+					<span class="text-xs font-medium px-2 py-1 rounded-md bg-gray-800 text-gray-300 border border-gray-700">
+						{tag}
+					</span>
+				))
+			}
+		</div>
+	</div>
+
+	<!-- Arrow Icon -->
+	<div
+		class="absolute top-6 right-6 text-gray-500 group-hover:text-white transition-colors"
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="lucide lucide-arrow-up-right"
+			><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg
+		>
+	</div>
+</a>

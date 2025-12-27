@@ -1,0 +1,74 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Card from "../../components/Card.astro";
+import { languages } from "../../i18n/ui";
+import { ui } from "../../i18n/ui";
+import { projects } from "../../i18n/content";
+import { useTranslations } from "../../i18n/utils";
+
+export function getStaticPaths() {
+    return Object.keys(languages).map((lang) => {
+        return { params: { lang } };
+    });
+}
+
+const { lang } = Astro.params;
+const t = useTranslations(lang as keyof typeof ui);
+const currentProjects = projects[lang as keyof typeof projects];
+---
+
+<Layout title="Portfolio | Developer" lang={lang}>
+    <!-- Hero Section -->
+    <header class="py-20 relative">
+        <h1
+            class="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500 mb-6"
+        >
+            {t("hero.title")}
+            <br />
+            {t("hero.title.line2")}
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl leading-relaxed">
+            {t("hero.description")}
+        </p>
+    </header>
+
+    <!-- Projects Grid (Bento) -->
+    <section id="projects" class="py-10">
+        <h2
+            class="text-2xl font-semibold text-white mb-8 flex items-center gap-2"
+        >
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            {t("projects.title")}
+        </h2>
+
+        <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(180px,auto)]"
+        >
+            {
+                currentProjects.map((project) => (
+                    <Card
+                        title={project.title}
+                        description={project.description}
+                        slug={project.slug}
+                        href={project.href}
+                        tags={project.tags}
+                        color={project.color}
+                        class={project.class}
+                        image={project.image}
+                    />
+                ))
+            }
+        </div>
+    </section>
+
+    <footer
+        class="mt-auto py-10 border-t border-white/5 flex justify-between items-center text-gray-500 text-sm"
+    >
+        <p>{t("footer.rights")}</p>
+        <div class="flex gap-4">
+            <a href="#" class="hover:text-white transition-colors">GitHub</a>
+            <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+            <a href="#" class="hover:text-white transition-colors">Email</a>
+        </div>
+    </footer>
+</Layout>

@@ -1,0 +1,54 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+	lang?: string;
+}
+
+const { title, description = "A simple portfolio", lang = "pt" } = Astro.props;
+
+import "../styles/global.css";
+import LanguagePicker from "../components/LanguagePicker.astro";
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body
+		class="bg-gray-950 text-gray-50 font-sans antialiased selection:bg-indigo-500 selection:text-white"
+	>
+		<div
+			class="fixed inset-0 -z-10 h-full w-full bg-gray-950 bg-[radial-gradient(#1f2937_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"
+		>
+		</div>
+
+		<LanguagePicker />
+
+		<main
+			class="max-w-screen-xl mx-auto px-6 py-12 min-h-screen flex flex-col"
+		>
+			<slot />
+		</main>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		font-family: "Inter", sans-serif;
+	}
+</style>
