@@ -40,6 +40,7 @@ export const projects = {
             description: "Plataforma comunitária para entusiastas da GCam. Com compartilhamento de XML, predefinições e verificações de compatibilidade de dispositivos.",
             details: "Hub central para fotógrafos móveis. Permite upload e download de configurações XML para Google Camera. Sistema de votação e comentários para as melhores configurações. Backend em Firebase para escalabilidade.",
             image: "/images/gcam-club.png",
+            video: "/videos/gb-club-demo.mp4",
             href: "#",
             tags: ["Flutter", "Firebase"],
             color: "#f59e0b", // Amber
@@ -87,6 +88,7 @@ export const projects = {
             description: "Community platform for GCam enthusiasts. Features XML sharing, presets, and device compatibility checks.",
             details: "Central hub for mobile photographers. Allows upload and download of XML configurations for Google Camera. Voting and comment system for best configs. Backend on Firebase for scalability.",
             image: "/images/gcam-club.png",
+            video: "/videos/gb-club-demo.mp4",
             href: "#",
             tags: ["Flutter", "Firebase"],
             color: "#f59e0b", // Amber
