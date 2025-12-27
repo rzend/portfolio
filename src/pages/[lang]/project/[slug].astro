@@ -25,7 +25,7 @@ const { project, lang } = Astro.props;
 <Layout title={`${project.title} | Portfolio`} lang={lang}>
     <div class="max-w-4xl mx-auto">
         <a
-            href={`/${lang}/`}
+            href={`${import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL}/${lang}/`}
             class="inline-flex items-center text-gray-400 hover:text-white mb-8 transition-colors group"
         >
             <svg

@@ -9,7 +9,7 @@ const lang = getLangFromUrl(Astro.url);
     {
         Object.entries(languages).map(([l, label]) => (
             <a
-                href={`/${l}/`}
+                href={`${import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL}/${l}/`}
                 class:list={[
                     "text-sm font-medium px-2 py-1 rounded transition-colors",
                     l === lang

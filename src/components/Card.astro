@@ -1,4 +1,6 @@
 ---
+import { getLangFromUrl } from "../i18n/utils";
+
 interface Props {
 	title: string;
 	description: string;
@@ -20,9 +22,9 @@ const {
 	image,
 	slug,
 } = Astro.props;
-const currentUrl = Astro.url.pathname;
-const lang = currentUrl.split("/")[1] || "pt";
-const detailsLink = slug ? `/${lang}/project/${slug}` : href;
+const lang = getLangFromUrl(Astro.url);
+const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
+const detailsLink = slug ? `${base}/${lang}/project/${slug}` : href;
 ---
 
 <a
