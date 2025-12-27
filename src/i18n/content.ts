@@ -23,15 +23,16 @@ export const projects = {
             ]
         },
         {
-            slug: "ai-chat-assistant",
-            title: "AI Chat Assistant",
-            description: "Chatbot contextual integrado com GPT-4 e LLMs locais. Possui respostas em tempo real e gerenciamento de histórico.",
-            details: "Assistant inteligente capaz de manter contexto da conversa. Utiliza LangChain para orquestração e suporta múltiplos modelos de linguagem. Interface moderna construída com React e WebSocket para baixa latência.",
-            image: "/images/ai-chat.png",
+            slug: "finbot-ai",
+            title: "FinBot (Assistente Financeiro)",
+            description: "Assistente de IA contextual que ajuda na gestão financeira. Integrado via microserviços com RAG e inferência local.",
+            details: "A arquitetura segue o padrão de microserviços em três camadas. O Frontend (Angular) conecta-se ao Backend (Java/Spring), que atua como orquestrador seguro. O Backend enriquece o contexto com dados financeiros do usuário (RAG) antes de consultar o microserviço de IA (Python/FastAPI) rodando GPT4All localmente. Isso garante privacidade absoluta e respostas personalizadas (ex: 'Seu saldo é R$ X'). Todo o histórico é persistido no PostgreSQL.",
+            image: "/images/finbot-ui.png",
             href: "#",
-            tags: ["Python", "FastAPI", "AI"],
+            tags: ["Python", "FastAPI", "AI", "GPT4All", "Spring Boot", "RAG"],
             color: "#3b82f6", // Blue
             class: "md:col-span-1",
+            gallery: []
         },
         {
             slug: "gcam-club",
@@ -69,15 +70,16 @@ export const projects = {
             ]
         },
         {
-            slug: "ai-chat-assistant",
-            title: "AI Chat Assistant",
-            description: "Contextual chatbot integrated with GPT-4 and local LLMs. Features real-time responses and history management.",
-            details: "Intelligent assistant capable of maintaining conversation context. Uses LangChain for orchestration and supports multiple language models. Modern interface built with React and WebSocket for low latency.",
-            image: "/images/ai-chat.png",
+            slug: "finbot-ai",
+            title: "FinBot (Finance Assistant)",
+            description: "Contextual AI assistant for financial management. Integrated via microservices with RAG and local inference.",
+            details: "The architecture follows a three-layer microservices pattern. The Frontend (Angular) connects to the Backend (Java/Spring), which acts as a secure orchestrator. The Backend enriches the context with user financial data (RAG) before querying the AI microservice (Python/FastAPI) running GPT4All locally. This ensures absolute privacy and personalized responses (e.g., 'Your balance is $X'). All history is persisted in PostgreSQL.",
+            image: "/images/finbot-ui.png",
             href: "#",
-            tags: ["Python", "FastAPI", "AI"],
+            tags: ["Python", "FastAPI", "AI", "GPT4All", "Spring Boot", "RAG"],
             color: "#3b82f6", // Blue
             class: "md:col-span-1",
+            gallery: []
         },
         {
             slug: "gcam-club",
