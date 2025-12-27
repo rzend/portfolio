@@ -67,7 +67,7 @@ const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
             </header>
 
             {
-                project.image && (
+                project.image && !project.hideMainImage && (
                     <div class="rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900">
                         <img
                             src={base + project.image}
@@ -96,7 +96,7 @@ const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
                             <h3 class="text-2xl font-semibold text-white mb-6">
                                 {lang === "pt" ? "Demonstração" : "Demo"}
                             </h3>
-                            <div class="rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900">
+                            <div class="max-w-lg mx-auto rounded-xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900">
                                 <video
                                     controls
                                     class="w-full h-auto"
@@ -137,151 +137,174 @@ const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
                     )
                 }
 
-                <div class="flex gap-4 mt-8">
+                <div class="flex flex-col gap-4 mt-8">
                     {
-                        project.repositories
-                            ? project.repositories.map((repo) => (
-                                  <a
-                                      href={repo.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
-                                  >
-                                      {repo.label}
-                                      <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="20"
-                                          height="20"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          stroke-width="2"
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          class="ml-2"
-                                      >
-                                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                          <polyline points="15 3 21 3 21 9" />
-                                          <line
-                                              x1="10"
-                                              y1="14"
-                                              x2="21"
-                                              y2="3"
-                                          />
-                                      </svg>
-                                  </a>
-                              ))
-                            : project.href &&
-                              project.href !== "#" && (
-                                  <a
-                                      href={project.href}
-                                      class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
-                                  >
-                                      View Demo
-                                      <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="20"
-                                          height="20"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          stroke-width="2"
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          class="ml-2"
-                                      >
-                                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                          <polyline points="15 3 21 3 21 9" />
-                                          <line
-                                              x1="10"
-                                              y1="14"
-                                              x2="21"
-                                              y2="3"
-                                          />
-                                      </svg>
-                                  </a>
-                              )
+                        project.playStoreUrl && (
+                            <div class="p-4 bg-yellow-900/30 border border-yellow-700/50 rounded-xl mb-4">
+                                <p class="text-yellow-200 text-sm mb-3">
+                                    ⚠️{" "}
+                                    {lang === "pt"
+                                        ? "Aviso: A versão disponível na loja é a legado. O vídeo acima demonstra a versão modernizada (v2.0)."
+                                        : "Warning: The store version is legacy. The video above shows the modernized version (v2.0)."}
+                                </p>
+                                <a
+                                    href={project.playStoreUrl}
+                                    target="_blank"
+                                    class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg text-black bg-yellow-500 hover:bg-yellow-400 transition-colors"
+                                >
+                                    {lang === "pt"
+                                        ? "Ver na Play Store (Legado)"
+                                        : "View on Play Store (Legacy)"}
+                                </a>
+                            </div>
+                        )
                     }
+                    <div class="flex gap-4">
+                        {
+                            project.repositories
+                                ? project.repositories.map((repo) => (
+                                      <a
+                                          href={repo.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                                      >
+                                          {repo.label}
+                                          <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="20"
+                                              height="20"
+                                              viewBox="0 0 24 24"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              class="ml-2"
+                                          >
+                                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                              <polyline points="15 3 21 3 21 9" />
+                                              <line
+                                                  x1="10"
+                                                  y1="14"
+                                                  x2="21"
+                                                  y2="3"
+                                              />
+                                          </svg>
+                                      </a>
+                                  ))
+                                : project.href &&
+                                  project.href !== "#" && (
+                                      <a
+                                          href={project.href}
+                                          class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                                      >
+                                          View Demo
+                                          <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="20"
+                                              height="20"
+                                              viewBox="0 0 24 24"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              class="ml-2"
+                                          >
+                                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                              <polyline points="15 3 21 3 21 9" />
+                                              <line
+                                                  x1="10"
+                                                  y1="14"
+                                                  x2="21"
+                                                  y2="3"
+                                              />
+                                          </svg>
+                                      </a>
+                                  )
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</Layout>
 
-<!-- Lightbox Modal -->
-<div
-    id="lightbox"
-    class="fixed inset-0 z-50 hidden bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300 opacity-0"
-    onclick="closeLightbox()"
->
-    <!-- Close Button -->
-    <button
-        class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors"
+    <!-- Lightbox Modal -->
+    <div
+        id="lightbox"
+        class="fixed inset-0 z-50 hidden bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300 opacity-0"
         onclick="closeLightbox()"
     >
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-x"
-            ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+        <!-- Close Button -->
+        <button
+            class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors"
+            onclick="closeLightbox()"
         >
-    </button>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x"
+                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+            >
+        </button>
 
-    <!-- Image Container -->
-    <div
-        class="relative max-w-7xl max-h-[90vh] w-full flex items-center justify-center"
-    >
-        <img
-            id="lightbox-img"
-            src=""
-            alt="Full screen gallery image"
-            class="max-h-[90vh] max-w-full rounded-lg shadow-2xl object-contain"
-            onclick="event.stopPropagation()"
-        />
+        <!-- Image Container -->
+        <div
+            class="relative max-w-7xl max-h-[90vh] w-full flex items-center justify-center"
+        >
+            <img
+                id="lightbox-img"
+                src=""
+                alt="Full screen gallery image"
+                class="max-h-[90vh] max-w-full rounded-lg shadow-2xl object-contain"
+                onclick="event.stopPropagation()"
+            />
+        </div>
     </div>
-</div>
 
-<script is:inline>
-    const lightbox = document.getElementById("lightbox");
-    const lightboxImg = document.getElementById("lightbox-img");
+    <script is:inline>
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImg = document.getElementById("lightbox-img");
 
-    function openLightbox(imageSrc) {
-        if (!lightbox || !lightboxImg) return;
+        function openLightbox(imageSrc) {
+            if (!lightbox || !lightboxImg) return;
 
-        lightboxImg.src = imageSrc;
-        lightbox.classList.remove("hidden");
-        // Small delay to allow display:block to apply before opacity transition
-        setTimeout(() => {
-            lightbox.classList.remove("opacity-0");
-        }, 10);
+            lightboxImg.src = imageSrc;
+            lightbox.classList.remove("hidden");
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                lightbox.classList.remove("opacity-0");
+            }, 10);
 
-        document.body.style.overflow = "hidden"; // Prevent scrolling
-    }
-
-    function closeLightbox() {
-        if (!lightbox) return;
-
-        lightbox.classList.add("opacity-0");
-
-        setTimeout(() => {
-            lightbox.classList.add("hidden");
-            if (lightboxImg) lightboxImg.src = "";
-        }, 300); // Match transition duration
-
-        document.body.style.overflow = ""; // Restore scrolling
-    }
-
-    // Close on Escape key
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            closeLightbox();
+            document.body.style.overflow = "hidden"; // Prevent scrolling
         }
-    });
-</script>
+
+        function closeLightbox() {
+            if (!lightbox) return;
+
+            lightbox.classList.add("opacity-0");
+
+            setTimeout(() => {
+                lightbox.classList.add("hidden");
+                if (lightboxImg) lightboxImg.src = "";
+            }, 300); // Match transition duration
+
+            document.body.style.overflow = ""; // Restore scrolling
+        }
+
+        // Close on Escape key
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                closeLightbox();
+            }
+        });
+    </script>
+</Layout>
