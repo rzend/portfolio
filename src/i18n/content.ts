@@ -32,7 +32,34 @@ export const projects = {
             tags: ["Python", "FastAPI", "AI", "GPT4All", "Spring Boot", "RAG"],
             color: "#3b82f6", // Blue
             class: "md:col-span-1",
-            gallery: []
+            gallery: [],
+            architecture: `
+### Visão Geral (Microserviços)
+O FinBot opera com uma arquitetura distribuída, focada em privacidade e desacoplamento.
+
+### Componentes Principais
+1. **Frontend (Angular 16)**
+   - SPA Reativa (RxJS)
+   - Interface Moderna (Tailwind)
+   - Gerenciamento de Estado
+
+2. **Backend BFF (Spring Boot 3)**
+   - API Gateway & Orchestrator
+   - **Segurança**: JWT + OAuth2
+   - **Banco de Dados**: PostgreSQL (Transações)
+   - **Integração**: Comunica-se via REST com o módulo de IA.
+
+3. **AI Core (Python FastAPI)**
+   - **LLM Local**: GPT4All (Llama 3 8B Quantized) rodando na CPU.
+   - **RAG (Retrieval-Augmented Generation)**: ChromaDB para vetorização de dados financeiros.
+   - **Privacidade**: Nenhum dado financeiro deixa a infraestrutura do usuário.
+
+### Fluxo de Dados (RAG)
+1. Usuário pergunta: *"Quanto gastei em Uber?"*
+2. Spring valida a requisição e busca metadados.
+3. FastAPI recebe o prompt + contexto.
+4. O modelo processa e retorna a resposta natural: *"Você gastou R$ 150,00 em Uber este mês."*
+`
         },
         {
             slug: "gcam-club",
@@ -82,7 +109,34 @@ export const projects = {
             tags: ["Python", "FastAPI", "AI", "GPT4All", "Spring Boot", "RAG"],
             color: "#3b82f6", // Blue
             class: "md:col-span-1",
-            gallery: []
+            gallery: [],
+            architecture: `
+### Overview (Microservices)
+FinBot operates on a distributed architecture focused on privacy and decoupling.
+
+### Main Components
+1. **Frontend (Angular 16)**
+   - Reactive SPA (RxJS)
+   - Modern UI (Tailwind)
+   - State Management
+
+2. **Backend BFF (Spring Boot 3)**
+   - API Gateway & Orchestrator
+   - **Security**: JWT + OAuth2
+   - **Database**: PostgreSQL (Transactions)
+   - **Integration**: REST communication with AI module.
+
+3. **AI Core (Python FastAPI)**
+   - **Local LLM**: GPT4All (Llama 3 8B Quantized) running on CPU.
+   - **RAG (Retrieval-Augmented Generation)**: ChromaDB for vectorizing financial data.
+   - **Privacy**: No financial data leaves the user infrastructure.
+
+### Data Flow (RAG)
+1. User asks: *"How much did I spend on Uber?"*
+2. Spring validates request and fetches metadata.
+3. FastAPI receives prompt + context.
+4. Model processes and returns natural response: *"You spent $150.00 on Uber this month."*
+`
         },
         {
             slug: "gcam-club",
