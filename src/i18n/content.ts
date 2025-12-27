@@ -5,7 +5,7 @@ export const projects = {
             title: "Fin APP (Finance Tracker)",
             description: "Uma plataforma completa de gestão financeira. Apresenta uma arquitetura de microserviços robusta integrando Java Spring Boot, Angular e um Chatbot IA inteligente.",
             details: "A arquitetura destaca-se pelo uso de um microserviço Python separado para o Chatbot, utilizando GPT4All para inferência local segura. O backend Java atua como orquestrador, enriquecendo o contexto com dados financeiros do usuário (RAG). Dashboard interativo com gráficos de despesas e receitas. O sistema permite o gerenciamento completo de transações (receitas, despesas, investimentos), possui conversor de câmbio em tempo real e exportação de relatórios detalhados.",
-            image: "/images/finapp/dashboard-chat.png",
+            image: "/images/finapp-cover.png",
             href: "#",
             repositories: [
                 { label: "Frontend", url: "https://github.com/rzend/personal-finance-web" },
@@ -55,7 +55,7 @@ export const projects = {
             title: "Fin APP (Finance Tracker)",
             description: "A comprehensive financial management platform. Features a robust microservices architecture integrating Java Spring Boot, Angular, and an intelligent AI Chatbot.",
             details: "The architecture highlights a separate Python microservice for the Chatbot, using GPT4All for secure local inference. The Java backend acts as an orchestrator, enriching context with user financial data (RAG). Interactive dashboard with expense and income charts. The system allows complete transaction management (income, expenses, investments), features a real-time currency converter, and detailed report export.",
-            image: "/images/finapp/dashboard-chat.png",
+            image: "/images/finapp-cover.png",
             href: "#",
             repositories: [
                 { label: "Frontend", url: "https://github.com/rzend/personal-finance-web" },
