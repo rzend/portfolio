@@ -34,63 +34,83 @@ export const projects = {
             class: "md:col-span-1",
             gallery: [],
             architecture: `
-## Arquitetura do Chatbot com IA
+<h2 class="text-3xl font-bold mb-6">Arquitetura do Chatbot com IA</h2>
+<p class="mb-4">Este documento detalha a implementação da funcionalidade de Chatbot, que segue uma arquitetura de microserviços para integrar inteligência artificial (LLM) aos dados financeiros do usuário.</p>
 
-Este documento detalha a implementação da funcionalidade de Chatbot, que segue uma arquitetura de microserviços para integrar inteligência artificial (LLM) aos dados financeiros do usuário.
+<h3 class="text-2xl font-semibold mb-4 text-white">Visão Geral do Fluxo</h3>
+<p class="mb-4">O sistema utiliza uma arquitetura em três camadas para processar as mensagens de forma segura e contextualizada:</p>
+<ol class="list-decimal pl-6 mb-8 space-y-2">
+    <li><strong>Frontend (Angular)</strong>: Interface do usuário e envio de mensagens.</li>
+    <li><strong>Backend (Java/Spring)</strong>: Orquestrador, gerenciador de contexto e persistência.</li>
+    <li><strong>Microserviço AI (Python/FastAPI)</strong>: Motor de inferência de IA usando GPT4All.</li>
+</ol>
 
-### Visão Geral do Fluxo
+<div class="mb-8">
+    <h3 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-2xl">🐍</span> 1. O Microserviço Python (<code class="bg-gray-800 px-1 rounded text-sm text-green-300">gpt4all-service</code>)</h3>
+    <p class="mb-3">Este serviço é o componente focado exclusivamente na inteligência artificial.</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Tecnologia</strong>: <span class="text-blue-300">FastAPI</span> para API REST de alta performance.</li>
+        <li><strong>Motor de IA</strong>: Utiliza a biblioteca <code>gpt4all</code> para carregar modelos LLM (como Orca Mini ou Llama) localmente na memória (CPU).</li>
+        <li><strong>Isolamento</strong>: Executa em um processo separado (container Docker próprio), garantindo que o processamento pesado da IA não afete a performance da API principal (Java) e permitindo escalabilidade independente.</li>
+        <li><strong>Endpoint Inteligente</strong>: Expõe a rota <code>POST /chat</code> que recebe um prompt, um prompt de sistema (instruções) e parâmetros de configuração, retornando a resposta gerada.</li>
+    </ul>
+</div>
 
-O sistema utiliza uma arquitetura em três camadas para processar as mensagens de forma segura e contextualizada:
+<div class="mb-8">
+    <h3 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-2xl">☕</span> 2. O Backend Java Integrador (<code class="bg-gray-800 px-1 rounded text-sm text-yellow-300">ChatService</code>)</h3>
+    <p class="mb-3">O Backend Spring Boot atua como intermediário inteligente ("Middleware Pattern") e provedor de contexto.</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Enriquecimento de Contexto (RAG Simplificado)</strong>: Antes de contatar a IA, o <code>ChatService</code> consulta o banco de dados (<code>TransacaoRepository</code>) para buscar o resumo financeiro do usuário (saldo atual, despesas dos últimos 30 dias, totais por categoria).</li>
+        <li><strong>Engenharia de Prompt</strong>: Injeta os dados financeiros recuperados no "System Prompt". Isso permite que a IA forneça respostas personalizadas e baseadas em dados reais (ex: <em>"Seu saldo atual é R$ X"</em> ou <em>"Você gastou muito em Alimentação"</em>).</li>
+        <li><strong>Comunicação Segura</strong>: O Backend Java atua como um gateway seguro. O serviço Python não é exposto publicamente; apenas a API Java consegue se comunicar com ele (via rede interna do Docker ou localhost).</li>
+        <li><strong>Persistência</strong>: Armazena todo o histórico da conversa (perguntas do usuário e respostas da IA) na tabela <code>chat_messages</code> via <code>ChatMessageRepository</code>.</li>
+    </ul>
+</div>
 
-1. **Frontend (Angular)**: Interface do usuário e envio de mensagens.
-2. **Backend (Java/Spring)**: Orquestrador, gerenciador de contexto e persistência.
-3. **Microserviço AI (Python/FastAPI)**: Motor de inferência de IA usando GPT4All.
+<div class="mb-8">
+    <h3 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-2xl">🅰️</span> 3. O Frontend Angular (<code class="bg-gray-800 px-1 rounded text-sm text-red-300">ChatComponent</code>)</h3>
+    <p class="mb-3">O cliente web consome a API Java, mantendo a abstração completa do serviço de IA. O Frontend não sabe que existe um serviço Python.</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Componentes</strong>:
+            <ul class="list-circle pl-6 mt-1 space-y-1">
+                <li><code>ChatComponent</code>: Gerencia a UI, estado de <em>loading</em> ("digitando...") e rolagem automática.</li>
+                <li><code>ChatApiService</code>: Serviço que centraliza as chamadas HTTP para o endpoint <code>/api/chat</code> do Java.</li>
+            </ul>
+        </li>
+        <li><strong>Fluxo de Usuário</strong>: Oferece uma experiência fluida onde o usuário interage com o bot como se fosse um chat convencional.</li>
+    </ul>
+</div>
 
-### 1. 🐍 O Microserviço Python (\`gpt4all-service\`)
-
-Este serviço é o componente focado exclusivamente na inteligência artificial.
-
-- **Tecnologia**: **FastAPI** para API REST de alta performance.
-- **Motor de IA**: Utiliza a biblioteca \`gpt4all\` para carregar modelos LLM (como Orca Mini ou Llama) localmente na memória (CPU).
-- **Isolamento**: Executa em um processo separado (container Docker próprio), garantindo que o processamento pesado da IA não afete a performance da API principal (Java) e permitindo escalabilidade independente.
-- **Endpoint Inteligente**: Expõe a rota \`POST /chat\` que recebe um prompt, um prompt de sistema (instruções) e parâmetros de configuração, retornando a resposta gerada.
-
-### 2. ☕ O Backend Java Integrador (\`ChatService\`)
-
-O Backend Spring Boot atua como intermediário inteligente ("Middleware Pattern") e provedor de contexto.
-
-- **Enriquecimento de Contexto (RAG Simplificado)**: Antes de contatar a IA, o \`ChatService\` consulta o banco de dados (\`TransacaoRepository\`) para buscar o resumo financeiro do usuário (saldo atual, despesas dos últimos 30 dias, totais por categoria).
-- **Engenharia de Prompt**: Injeta os dados financeiros recuperados no "System Prompt". Isso permite que a IA forneça respostas personalizadas e baseadas em dados reais (ex: *"Seu saldo atual é R$ X"* ou *"Você gastou muito em Alimentação"*).
-- **Comunicação Segura**: O Backend Java atua como um gateway seguro. O serviço Python não é exposto publicamente; apenas a API Java consegue se comunicar com ele (via rede interna do Docker ou localhost).
-- **Persistência**: Armazena todo o histórico da conversa (perguntas do usuário e respostas da IA) na tabela \`chat_messages\` via \`ChatMessageRepository\`.
-
-### 3. 🅰️ O Frontend Angular (\`ChatComponent\`)
-
-O cliente web consome a API Java, mantendo a abstração completa do serviço de IA. O Frontend não sabe que existe um serviço Python.
-
-- **Componentes**:
-  - \`ChatComponent\`: Gerencia a UI, estado de *loading* ("digitando...") e rolagem automática.
-  - \`ChatApiService\`: Serviço que centraliza as chamadas HTTP para o endpoint \`/api/chat\` do Java.
-- **Fluxo de Usuário**: Oferece uma experiência fluida onde o usuário interage com o bot como se fosse um chat convencional.
-
-### Fluxo de Dados Detalhado (Step-by-Step)
-
-1. Usuário digita e envia uma mensagem no Frontend.
-2. Frontend envia uma requisição \`POST /api/chat\` para o Backend Java.
-3. Backend Java:
-   - Identifica o usuário autenticado via Token JWT.
-   - Busca as transações e calcula o balanço financeiro do usuário.
-   - Constrói o prompt final: *Instrução de Comportamento + Contexto Financeiro + Pergunta do Usuário*.
-   - Envia o prompt via HTTP (\`RestTemplate\`) para o Microserviço Python (porta 5000).
-4. Microserviço Python:
-   - Recebe o prompt.
-   - Processa a inferência no modelo GPT4All local.
-   - Gera a resposta textual e devolve para o Java.
-5. Backend Java:
-   - Recebe a resposta da IA.
-   - Salva a mensagem do usuário e a resposta da IA no banco de dados para histórico.
-   - Retorna a resposta final para o Frontend.
-6. Frontend exibe a resposta para o usuário e atualiza a lista de mensagens.
+<div class="mb-8">
+    <h3 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">Fluxo de Dados Detalhado (Step-by-Step)</h3>
+    <ol class="list-decimal pl-6 space-y-3 marker:text-gray-400">
+        <li>Usuário digita e envia uma mensagem no Frontend.</li>
+        <li>Frontend envia uma requisição <code>POST /api/chat</code> para o Backend Java.</li>
+        <li>Backend Java:
+            <ul class="list-disc pl-6 mt-1 space-y-1 text-gray-400 text-sm">
+                <li>Identifica o usuário autenticado via Token JWT.</li>
+                <li>Busca as transações e calcula o balanço financeiro do usuário.</li>
+                <li>Constrói o prompt final: <em>Instrução de Comportamento + Contexto Financeiro + Pergunta do Usuário</em>.</li>
+                <li>Envia o prompt via HTTP (<code>RestTemplate</code>) para o Microserviço Python (porta 5000).</li>
+            </ul>
+        </li>
+        <li>Microserviço Python:
+            <ul class="list-disc pl-6 mt-1 space-y-1 text-gray-400 text-sm">
+                <li>Recebe o prompt.</li>
+                <li>Processa a inferência no modelo GPT4All local.</li>
+                <li>Gera a resposta textual e devolve para o Java.</li>
+            </ul>
+        </li>
+        <li>Backend Java:
+            <ul class="list-disc pl-6 mt-1 space-y-1 text-gray-400 text-sm">
+                <li>Recebe a resposta da IA.</li>
+                <li>Salva a mensagem do usuário e a resposta da IA no banco de dados para histórico.</li>
+                <li>Retorna a resposta final para o Frontend.</li>
+            </ul>
+        </li>
+        <li>Frontend exibe a resposta para o usuário e atualiza a lista de mensagens.</li>
+    </ol>
+</div>
 `
         },
         {
@@ -143,63 +163,83 @@ O cliente web consome a API Java, mantendo a abstração completa do serviço de
             class: "md:col-span-1",
             gallery: [],
             architecture: `
-## AI Chatbot Architecture
+<h2 class="text-3xl font-bold mb-6">AI Chatbot Architecture</h2>
+<p class="mb-4">This document details the implementation of the Chatbot functionality, which uses a microservices architecture to integrate artificial intelligence (LLM) with user financial data.</p>
 
-This document details the implementation of the Chatbot functionality, which uses a microservices architecture to integrate artificial intelligence (LLM) with user financial data.
+<h3 class="text-2xl font-semibold mb-4 text-white">Flow Overview</h3>
+<p class="mb-4">The system uses a three-tier architecture to process messages securely and contextually:</p>
+<ol class="list-decimal pl-6 mb-8 space-y-2">
+    <li><strong>Frontend (Angular)</strong>: User interface and message sending.</li>
+    <li><strong>Backend (Java/Spring)</strong>: Orchestrator, context manager, and persistence.</li>
+    <li><strong>AI Microservice (Python/FastAPI)</strong>: AI inference engine using GPT4All.</li>
+</ol>
 
-### Flow Overview
+<div class="mb-8">
+    <h3 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-2xl">🐍</span> 1. Python Microservice (<code class="bg-gray-800 px-1 rounded text-sm text-green-300">gpt4all-service</code>)</h3>
+    <p class="mb-3">This service is the component focused exclusively on artificial intelligence.</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Technology</strong>: <span class="text-blue-300">FastAPI</span> for high-performance REST API.</li>
+        <li><strong>AI Engine</strong>: Uses the <code>gpt4all</code> library to load LLM models (like Orca Mini or Llama) locally in memory (CPU).</li>
+        <li><strong>Isolation</strong>: Runs in a separate process (own Docker container), ensuring heavy AI processing doesn't affect main API (Java) performance, allowing independent scalability.</li>
+        <li><strong>Smart Endpoint</strong>: Exposes <code>POST /chat</code> route receiving a prompt, system prompt (instructions), and config parameters, returning generated response.</li>
+    </ul>
+</div>
 
-The system uses a three-tier architecture to process messages securely and contextually:
+<div class="mb-8">
+    <h3 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-2xl">☕</span> 2. Integrator Java Backend (<code class="bg-gray-800 px-1 rounded text-sm text-yellow-300">ChatService</code>)</h3>
+    <p class="mb-3">The Spring Boot Backend acts as an intelligent intermediary ("Middleware Pattern") and context provider.</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Context Enrichment (Simplified RAG)</strong>: Before contacting AI, <code>ChatService</code> queries database (<code>TransactionRepository</code>) to fetch user financial summary (current balance, last 30 days expenses, category totals).</li>
+        <li><strong>Prompt Engineering</strong>: Injects retrieved financial data into "System Prompt". This allows AI to provide personalized answers based on real data (e.g., <em>"Your current balance is $ X"</em> or <em>"You spent a lot on Food"</em>).</li>
+        <li><strong>Secure Communication</strong>: Java Backend acts as a secure gateway. Python service isn't publicly exposed; only Java API can communicate with it (via internal Docker network or localhost).</li>
+        <li><strong>Persistence</strong>: Stores full conversation history (user questions and AI answers) in <code>chat_messages</code> table via <code>ChatMessageRepository</code>.</li>
+    </ul>
+</div>
 
-1. **Frontend (Angular)**: User interface and message sending.
-2. **Backend (Java/Spring)**: Orchestrator, context manager, and persistence.
-3. **AI Microservice (Python/FastAPI)**: AI inference engine using GPT4All.
+<div class="mb-8">
+    <h3 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-2xl">🅰️</span> 3. Angular Frontend (<code class="bg-gray-800 px-1 rounded text-sm text-red-300">ChatComponent</code>)</h3>
+    <p class="mb-3">The web client consumes the Java API, maintaining full abstraction of the AI service. Frontend doesn't know Python service exists.</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li><strong>Components</strong>:
+            <ul class="list-circle pl-6 mt-1 space-y-1">
+                <li><code>ChatComponent</code>: Manages UI, <em>loading</em> state ("typing...") and auto-scrolling.</li>
+                <li><code>ChatApiService</code>: Service centralizing HTTP calls to Java <code>/api/chat</code> endpoint.</li>
+            </ul>
+        </li>
+        <li><strong>User Flow</strong>: Offers a fluid experience where user interacts with bot as if it were a conventional chat.</li>
+    </ul>
+</div>
 
-### 1. 🐍 Python Microservice (\`gpt4all-service\`)
-
-This service is the component focused exclusively on artificial intelligence.
-
-- **Technology**: **FastAPI** for high-performance REST API.
-- **AI Engine**: Uses the \`gpt4all\` library to load LLM models (like Orca Mini or Llama) locally in memory (CPU).
-- **Isolation**: Runs in a separate process (own Docker container), ensuring heavy AI processing doesn't affect main API (Java) performance, allowing independent scalability.
-- **Smart Endpoint**: Exposes \`POST /chat\` route receiving a prompt, system prompt (instructions), and config parameters, returning generated response.
-
-### 2. ☕ Integrator Java Backend (\`ChatService\`)
-
-The Spring Boot Backend acts as an intelligent intermediary ("Middleware Pattern") and context provider.
-
-- **Context Enrichment (Simplified RAG)**: Before contacting AI, \`ChatService\` queries database (\`TransactionRepository\`) to fetch user financial summary (current balance, last 30 days expenses, category totals).
-- **Prompt Engineering**: Injects retrieved financial data into "System Prompt". This allows AI to provide personalized answers based on real data (e.g., *"Your current balance is $ X"* or *"You spent a lot on Food"*).
-- **Secure Communication**: Java Backend acts as a secure gateway. Python service isn't publicly exposed; only Java API can communicate with it (via internal Docker network or localhost).
-- **Persistence**: Stores full conversation history (user questions and AI answers) in \`chat_messages\` table via \`ChatMessageRepository\`.
-
-### 3. 🅰️ Angular Frontend (\`ChatComponent\`)
-
-The web client consumes the Java API, maintaining full abstraction of the AI service. Frontend doesn't know Python service exists.
-
-- **Components**:
-  - \`ChatComponent\`: Manages UI, *loading* state ("typing...") and auto-scrolling.
-  - \`ChatApiService\`: Service centralizing HTTP calls to Java \`/api/chat\` endpoint.
-- **User Flow**: Offers a fluid experience where user interacts with bot as if it were a conventional chat.
-
-### Detailed Data Flow (Step-by-Step)
-
-1. User types and sends message on Frontend.
-2. Frontend sends request \`POST /api/chat\` to Java Backend.
-3. Java Backend:
-   - Identifies authenticated user via JWT Token.
-   - Fetches transactions and calculates user financial balance.
-   - Constructs final prompt: *Behavior Instruction + Financial Context + User Question*.
-   - Sends prompt via HTTP (\`RestTemplate\`) to Python Microservice (port 5000).
-4. Python Microservice:
-   - Receives prompt.
-   - Processes inference on local GPT4All model.
-   - Generates text response and returns to Java.
-5. Java Backend:
-   - Receives AI response.
-   - Saves user message and AI response in database for history.
-   - Returns final response to Frontend.
-6. Frontend displays response to user and updates message list.
+<div class="mb-8">
+    <h3 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2">Detailed Data Flow (Step-by-Step)</h3>
+    <ol class="list-decimal pl-6 space-y-3 marker:text-gray-400">
+        <li>User types and sends message on Frontend.</li>
+        <li>Frontend sends request <code>POST /api/chat</code> to Java Backend.</li>
+        <li>Java Backend:
+            <ul class="list-disc pl-6 mt-1 space-y-1 text-gray-400 text-sm">
+                <li>Identifies authenticated user via JWT Token.</li>
+                <li>Fetches transactions and calculates user financial balance.
+                <li>Constructs final prompt: <em>Behavior Instruction + Financial Context + User Question</em>.</li>
+                <li>Sends prompt via HTTP (<code>RestTemplate</code>) to Python Microservice (port 5000).</li>
+            </ul>
+        </li>
+        <li>Python Microservice:
+            <ul class="list-disc pl-6 mt-1 space-y-1 text-gray-400 text-sm">
+                <li>Receives prompt.</li>
+                <li>Processes inference on local GPT4All model.</li>
+                <li>Generates text response and returns to Java.</li>
+            </ul>
+        </li>
+        <li>Java Backend:
+            <ul class="list-disc pl-6 mt-1 space-y-1 text-gray-400 text-sm">
+                <li>Receives AI response.</li>
+                <li>Saves user message and AI response in database for history.</li>
+                <li>Returns final response to Frontend.</li>
+            </ul>
+        </li>
+        <li>Frontend displays response to user and updates message list.</li>
+    </ol>
+</div>
 `
         },
         {
